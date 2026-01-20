@@ -1,0 +1,22 @@
+{
+  "id": "dark-elf",
+  "displayName": "Dark Elf",
+  "description": "Cunning and ruthless, masters of shadow and deception",
+  "allowedTags": ["dark", "shadow", "cruel"],
+  "patterns": [
+    { "id": "p-s", "tokens": ["prefix", "stem"], "weight": 2 },
+    { "id": "p-s-sf", "tokens": ["prefix", "stem", "suffix"], "weight": 3 },
+    { "id": "s-sf", "tokens": ["stem", "suffix"], "weight": 2 }
+  ],
+  "constraints": {
+    "minLength": 5,
+    "maxLength": 12,
+    "avoidDoubleVowels": false,
+    "bannedClusters": ["kkk"],
+    "substitutions": []
+  },
+  "meaningTemplate": {
+    "order": "prefix-first",
+    "joiner": " "
+  }
+}

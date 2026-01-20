@@ -1,0 +1,17 @@
+[
+  { "id": "we-p-1", "text": "Syl", "meaning": "Forest", "position": "prefix", "tags": ["nature"], "weight": 3, "raceIds": ["wood-elf"] },
+  { "id": "we-p-2", "text": "Thal", "meaning": "Green", "position": "prefix", "tags": ["nature"], "weight": 3, "raceIds": ["wood-elf"] },
+  { "id": "we-p-3", "text": "Fae", "meaning": "Wild", "position": "prefix", "tags": ["wild"], "weight": 2, "raceIds": ["wood-elf"] },
+  { "id": "we-p-4", "text": "Eld", "meaning": "Ancient", "position": "prefix", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"] },
+
+  { "id": "we-s-1", "text": "wyn", "meaning": "Wind", "position": "stem", "tags": ["swift"], "weight": 3, "raceIds": ["wood-elf"] },
+  { "id": "we-s-2", "text": "leaf", "meaning": "Leaf", "position": "stem", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"] },
+  { "id": "we-s-3", "text": "oak", "meaning": "Oak", "position": "stem", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"] },
+  { "id": "we-s-4", "text": "fern", "meaning": "Fern", "position": "stem", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"] },
+  { "id": "we-s-5", "text": "thorn", "meaning": "Thorn", "position": "stem", "tags": ["wild"], "weight": 2, "raceIds": ["wood-elf"] },
+
+  { "id": "we-sf-1", "text": "is", "meaning": "Spirit", "position": "suffix", "tags": ["wild"], "weight": 3, "raceIds": ["wood-elf"] },
+  { "id": "we-sf-2", "text": "wen", "meaning": "Daughter", "position": "suffix", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"], "gender": "feminine" },
+  { "id": "we-sf-3", "text": "or", "meaning": "Son", "position": "suffix", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"], "gender": "masculine" },
+  { "id": "we-sf-4", "text": "el", "meaning": "Tree", "position": "suffix", "tags": ["nature"], "weight": 2, "raceIds": ["wood-elf"] }
+]

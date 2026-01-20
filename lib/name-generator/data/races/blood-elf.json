@@ -1,0 +1,24 @@
+{
+  "id": "blood-elf",
+  "displayName": "Blood Elf",
+  "description": "Elegant and proud, wielders of arcane power and ancient magic",
+  "allowedTags": ["arcane", "elegant", "proud"],
+  "patterns": [
+    { "id": "p-s", "tokens": ["prefix", "stem"], "weight": 3 },
+    { "id": "p-s-sf", "tokens": ["prefix", "stem", "suffix"], "weight": 2 },
+    { "id": "s-sf", "tokens": ["stem", "suffix"], "weight": 2 }
+  ],
+  "constraints": {
+    "minLength": 4,
+    "maxLength": 11,
+    "avoidDoubleVowels": true,
+    "bannedClusters": ["qq", "xx"],
+    "substitutions": [
+      { "from": "ii", "to": "i" }
+    ]
+  },
+  "meaningTemplate": {
+    "order": "stem-first",
+    "joiner": " of "
+  }
+}

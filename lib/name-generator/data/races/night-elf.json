@@ -1,0 +1,24 @@
+{
+  "id": "night-elf",
+  "displayName": "Night Elf",
+  "description": "Mysterious and ancient, blessed by the moon and stars",
+  "allowedTags": ["lunar", "mystical", "ancient"],
+  "patterns": [
+    { "id": "p-s", "tokens": ["prefix", "stem"], "weight": 2 },
+    { "id": "p-s-sf", "tokens": ["prefix", "stem", "suffix"], "weight": 3 },
+    { "id": "s-sf", "tokens": ["stem", "suffix"], "weight": 2 }
+  ],
+  "constraints": {
+    "minLength": 5,
+    "maxLength": 12,
+    "avoidDoubleVowels": false,
+    "bannedClusters": ["zzz"],
+    "substitutions": [
+      { "from": "aaa", "to": "aa" }
+    ]
+  },
+  "meaningTemplate": {
+    "order": "prefix-first",
+    "joiner": " "
+  }
+}

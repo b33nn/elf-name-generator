@@ -1,0 +1,17 @@
+[
+  { "id": "ne-p-1", "text": "Nyx", "meaning": "Night", "position": "prefix", "tags": ["lunar"], "weight": 3, "raceIds": ["night-elf"] },
+  { "id": "ne-p-2", "text": "Lun", "meaning": "Moon", "position": "prefix", "tags": ["lunar"], "weight": 3, "raceIds": ["night-elf"] },
+  { "id": "ne-p-3", "text": "Stel", "meaning": "Star", "position": "prefix", "tags": ["mystical"], "weight": 2, "raceIds": ["night-elf"] },
+  { "id": "ne-p-4", "text": "Elun", "meaning": "Moonlight", "position": "prefix", "tags": ["lunar"], "weight": 2, "raceIds": ["night-elf"] },
+
+  { "id": "ne-s-1", "text": "ara", "meaning": "Hunter", "position": "stem", "tags": ["mystical"], "weight": 3, "raceIds": ["night-elf"] },
+  { "id": "ne-s-2", "text": "dra", "meaning": "Priestess", "position": "stem", "tags": ["mystical"], "weight": 2, "raceIds": ["night-elf"], "gender": "feminine" },
+  { "id": "ne-s-3", "text": "than", "meaning": "Warrior", "position": "stem", "tags": ["ancient"], "weight": 3, "raceIds": ["night-elf"], "gender": "masculine" },
+  { "id": "ne-s-4", "text": "issa", "meaning": "Dancer", "position": "stem", "tags": ["mystical"], "weight": 2, "raceIds": ["night-elf"], "gender": "feminine" },
+  { "id": "ne-s-5", "text": "dor", "meaning": "Watcher", "position": "stem", "tags": ["ancient"], "weight": 2, "raceIds": ["night-elf"] },
+
+  { "id": "ne-sf-1", "text": "is", "meaning": "Shadow", "position": "suffix", "tags": ["mystical"], "weight": 3, "raceIds": ["night-elf"] },
+  { "id": "ne-sf-2", "text": "ara", "meaning": "Moon", "position": "suffix", "tags": ["lunar"], "weight": 3, "raceIds": ["night-elf"] },
+  { "id": "ne-sf-3", "text": "eth", "meaning": "Night", "position": "suffix", "tags": ["lunar"], "weight": 2, "raceIds": ["night-elf"] },
+  { "id": "ne-sf-4", "text": "wen", "meaning": "Daughter", "position": "suffix", "tags": ["mystical"], "weight": 2, "raceIds": ["night-elf"], "gender": "feminine" }
+]

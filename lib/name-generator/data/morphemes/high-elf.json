@@ -1,0 +1,21 @@
+[
+  { "id": "he-p-1", "text": "Ael", "meaning": "Light", "position": "prefix", "tags": ["luminous"], "weight": 3, "raceIds": ["high-elf"] },
+  { "id": "he-p-2", "text": "Sil", "meaning": "Silver", "position": "prefix", "tags": ["noble"], "weight": 3, "raceIds": ["high-elf"] },
+  { "id": "he-p-3", "text": "Gal", "meaning": "Star", "position": "prefix", "tags": ["luminous"], "weight": 2, "raceIds": ["high-elf"] },
+  { "id": "he-p-4", "text": "El", "meaning": "Noble", "position": "prefix", "tags": ["noble"], "weight": 3, "raceIds": ["high-elf"] },
+  { "id": "he-p-5", "text": "Fin", "meaning": "Wise", "position": "prefix", "tags": ["noble"], "weight": 2, "raceIds": ["high-elf"] },
+
+  { "id": "he-s-1", "text": "wen", "meaning": "Maiden", "position": "stem", "tags": ["soft"], "weight": 3, "raceIds": ["high-elf"], "gender": "feminine" },
+  { "id": "he-s-2", "text": "dan", "meaning": "Warrior", "position": "stem", "tags": ["noble"], "weight": 3, "raceIds": ["high-elf"], "gender": "masculine" },
+  { "id": "he-s-3", "text": "riel", "meaning": "Princess", "position": "stem", "tags": ["noble"], "weight": 2, "raceIds": ["high-elf"], "gender": "feminine" },
+  { "id": "he-s-4", "text": "thil", "meaning": "Moon", "position": "stem", "tags": ["luminous"], "weight": 3, "raceIds": ["high-elf"] },
+  { "id": "he-s-5", "text": "dor", "meaning": "Land", "position": "stem", "tags": ["noble"], "weight": 2, "raceIds": ["high-elf"] },
+  { "id": "he-s-6", "text": "ion", "meaning": "Son", "position": "stem", "tags": ["noble"], "weight": 3, "raceIds": ["high-elf"], "gender": "masculine" },
+  { "id": "he-s-7", "text": "las", "meaning": "Leaf", "position": "stem", "tags": ["soft"], "weight": 2, "raceIds": ["high-elf"] },
+
+  { "id": "he-sf-1", "text": "iel", "meaning": "Daughter", "position": "suffix", "tags": ["soft"], "weight": 3, "raceIds": ["high-elf"], "gender": "feminine" },
+  { "id": "he-sf-2", "text": "ion", "meaning": "Son", "position": "suffix", "tags": ["noble"], "weight": 3, "raceIds": ["high-elf"], "gender": "masculine" },
+  { "id": "he-sf-3", "text": "dir", "meaning": "Guardian", "position": "suffix", "tags": ["noble"], "weight": 2, "raceIds": ["high-elf"] },
+  { "id": "he-sf-4", "text": "wen", "meaning": "Maiden", "position": "suffix", "tags": ["soft"], "weight": 2, "raceIds": ["high-elf"], "gender": "feminine" },
+  { "id": "he-sf-5", "text": "eth", "meaning": "Light", "position": "suffix", "tags": ["luminous"], "weight": 2, "raceIds": ["high-elf"] }
+]

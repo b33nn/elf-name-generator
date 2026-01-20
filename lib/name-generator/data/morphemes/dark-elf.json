@@ -1,0 +1,17 @@
+[
+  { "id": "de-p-1", "text": "Mor", "meaning": "Dark", "position": "prefix", "tags": ["dark"], "weight": 3, "raceIds": ["dark-elf"] },
+  { "id": "de-p-2", "text": "Shad", "meaning": "Shadow", "position": "prefix", "tags": ["shadow"], "weight": 3, "raceIds": ["dark-elf"] },
+  { "id": "de-p-3", "text": "Drow", "meaning": "Exile", "position": "prefix", "tags": ["dark"], "weight": 2, "raceIds": ["dark-elf"] },
+  { "id": "de-p-4", "text": "Vex", "meaning": "Cruel", "position": "prefix", "tags": ["cruel"], "weight": 2, "raceIds": ["dark-elf"] },
+
+  { "id": "de-s-1", "text": "ven", "meaning": "Blade", "position": "stem", "tags": ["cruel"], "weight": 3, "raceIds": ["dark-elf"] },
+  { "id": "de-s-2", "text": "rath", "meaning": "Wrath", "position": "stem", "tags": ["dark"], "weight": 2, "raceIds": ["dark-elf"] },
+  { "id": "de-s-3", "text": "zar", "meaning": "Death", "position": "stem", "tags": ["cruel"], "weight": 3, "raceIds": ["dark-elf"] },
+  { "id": "de-s-4", "text": "kael", "meaning": "Blood", "position": "stem", "tags": ["dark"], "weight": 2, "raceIds": ["dark-elf"] },
+  { "id": "de-s-5", "text": "vex", "meaning": "Pain", "position": "stem", "tags": ["cruel"], "weight": 2, "raceIds": ["dark-elf"] },
+
+  { "id": "de-sf-1", "text": "is", "meaning": "Shadow", "position": "suffix", "tags": ["shadow"], "weight": 3, "raceIds": ["dark-elf"] },
+  { "id": "de-sf-2", "text": "eth", "meaning": "Dark", "position": "suffix", "tags": ["dark"], "weight": 2, "raceIds": ["dark-elf"] },
+  { "id": "de-sf-3", "text": "yn", "meaning": "Blade", "position": "suffix", "tags": ["cruel"], "weight": 2, "raceIds": ["dark-elf"] },
+  { "id": "de-sf-4", "text": "ara", "meaning": "Night", "position": "suffix", "tags": ["dark"], "weight": 2, "raceIds": ["dark-elf"] }
+]

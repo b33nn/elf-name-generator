@@ -1,0 +1,24 @@
+{
+  "id": "wood-elf",
+  "displayName": "Wood Elf",
+  "description": "Swift and graceful, guardians of the ancient forests",
+  "allowedTags": ["nature", "wild", "swift"],
+  "patterns": [
+    { "id": "p-s", "tokens": ["prefix", "stem"], "weight": 3 },
+    { "id": "s", "tokens": ["stem"], "weight": 1 },
+    { "id": "p-s-sf", "tokens": ["prefix", "stem", "suffix"], "weight": 2 }
+  ],
+  "constraints": {
+    "minLength": 3,
+    "maxLength": 9,
+    "avoidDoubleVowels": true,
+    "bannedClusters": ["xx", "qq"],
+    "substitutions": [
+      { "from": "oo", "to": "o" }
+    ]
+  },
+  "meaningTemplate": {
+    "order": "stem-first",
+    "joiner": " of "
+  }
+}

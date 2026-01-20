@@ -1,0 +1,17 @@
+[
+  { "id": "be-p-1", "text": "Kael", "meaning": "Fire", "position": "prefix", "tags": ["arcane"], "weight": 3, "raceIds": ["blood-elf"] },
+  { "id": "be-p-2", "text": "Lor", "meaning": "Sun", "position": "prefix", "tags": ["elegant"], "weight": 3, "raceIds": ["blood-elf"] },
+  { "id": "be-p-3", "text": "Quel", "meaning": "High", "position": "prefix", "tags": ["proud"], "weight": 2, "raceIds": ["blood-elf"] },
+  { "id": "be-p-4", "text": "Shal", "meaning": "Flame", "position": "prefix", "tags": ["arcane"], "weight": 2, "raceIds": ["blood-elf"] },
+
+  { "id": "be-s-1", "text": "thas", "meaning": "Mage", "position": "stem", "tags": ["arcane"], "weight": 3, "raceIds": ["blood-elf"] },
+  { "id": "be-s-2", "text": "dorei", "meaning": "Child", "position": "stem", "tags": ["elegant"], "weight": 2, "raceIds": ["blood-elf"] },
+  { "id": "be-s-3", "text": "theron", "meaning": "King", "position": "stem", "tags": ["proud"], "weight": 3, "raceIds": ["blood-elf"], "gender": "masculine" },
+  { "id": "be-s-4", "text": "thas", "meaning": "Sun", "position": "stem", "tags": ["elegant"], "weight": 2, "raceIds": ["blood-elf"] },
+  { "id": "be-s-5", "text": "dra", "meaning": "Blood", "position": "stem", "tags": ["arcane"], "weight": 2, "raceIds": ["blood-elf"] },
+
+  { "id": "be-sf-1", "text": "is", "meaning": "Fire", "position": "suffix", "tags": ["arcane"], "weight": 3, "raceIds": ["blood-elf"] },
+  { "id": "be-sf-2", "text": "ion", "meaning": "Son", "position": "suffix", "tags": ["proud"], "weight": 2, "raceIds": ["blood-elf"], "gender": "masculine" },
+  { "id": "be-sf-3", "text": "wen", "meaning": "Daughter", "position": "suffix", "tags": ["elegant"], "weight": 2, "raceIds": ["blood-elf"], "gender": "feminine" },
+  { "id": "be-sf-4", "text": "eth", "meaning": "Flame", "position": "suffix", "tags": ["arcane"], "weight": 2, "raceIds": ["blood-elf"] }
+]

@@ -1,0 +1,18 @@
+node_modules
+.next
+.env*.local
+dist
+*.log
+.DS_Store
+
+/lib/generated/prisma
+
+# Vercel
+.vercel
+
+# Test files
+test-text-api.js
+
+# Database
+*.db
+*.db-journal

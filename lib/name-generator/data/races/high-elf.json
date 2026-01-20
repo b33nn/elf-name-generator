@@ -1,0 +1,25 @@
+{
+  "id": "high-elf",
+  "displayName": "High Elf",
+  "description": "Noble and wise, masters of magic and ancient lore",
+  "allowedTags": ["noble", "luminous", "soft"],
+  "patterns": [
+    { "id": "p-s", "tokens": ["prefix", "stem"], "weight": 3 },
+    { "id": "p-s-sf", "tokens": ["prefix", "stem", "suffix"], "weight": 2 },
+    { "id": "s-sf", "tokens": ["stem", "suffix"], "weight": 2 }
+  ],
+  "constraints": {
+    "minLength": 4,
+    "maxLength": 10,
+    "avoidDoubleVowels": true,
+    "bannedClusters": ["kk", "zz"],
+    "substitutions": [
+      { "from": "aa", "to": "a" },
+      { "from": "ee", "to": "e" }
+    ]
+  },
+  "meaningTemplate": {
+    "order": "stem-first",
+    "joiner": " of "
+  }
+}
