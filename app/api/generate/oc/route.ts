@@ -56,7 +56,12 @@ Format your response as JSON:
     }
   } catch (error) {
     console.error('OC generation error:', error);
-    return NextResponse.json({ error: 'Failed to generate OC' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({
+      error: 'Failed to generate OC',
+      details: errorMessage,
+      hasApiKey: !!process.env.TEXT_API_KEY
+    }, { status: 500 });
   }
 }
 
