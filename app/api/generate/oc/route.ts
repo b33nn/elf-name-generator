@@ -14,9 +14,17 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, race, gender } = body;
     const fallbackOC = buildMockOC(name, race, gender);
-    const useAI = process.env.TEXT_API_KEY;
+    const hasApiKey = !!process.env.TEXT_API_KEY;
+    const useAI = hasApiKey;
+
+    console.info('[oc] request', { hasApiKey, race, gender: gender || 'neutral' });
 
     if (useAI) {
+      console.info('[oc] ai config', {
+        hasUrl: !!process.env.TEXT_API_URL,
+        hasModel: !!process.env.TEXT_MODEL
+      });
+
       const textProvider = new RunAnytimeProvider(
         process.env.TEXT_API_KEY!,
         process.env.TEXT_API_URL,
@@ -41,17 +49,20 @@ Format your response as JSON. Return ONLY valid JSON, no markdown or extra text:
 
       try {
         const response = await textProvider.generateText(prompt);
+        const responsePreview = response.slice(0, 200).replace(/\s+/g, ' ');
+        console.info('[oc] ai response preview', responsePreview);
         const oc = parseOCResponse(response, fallbackOC);
         return NextResponse.json({ oc });
       } catch (error) {
-        console.error('OC generation error:', error);
+        console.error('[oc] ai error, using fallback:', error);
         return NextResponse.json({ oc: fallbackOC });
       }
     }
 
+    console.warn('[oc] missing TEXT_API_KEY, using fallback');
     return NextResponse.json({ oc: fallbackOC });
   } catch (error) {
-    console.error('OC generation error:', error);
+    console.error('[oc] request error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({
       error: 'Failed to generate OC',
