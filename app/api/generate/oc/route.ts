@@ -74,7 +74,7 @@ function getRandomClass(race: string): string {
 
 function getRandomPersonality(): string[] {
   const traits = ['Wise', 'Brave', 'Cunning', 'Mysterious', 'Noble', 'Fierce', 'Calm', 'Proud', 'Ancient', 'Swift'];
-  const selected = [];
+  const selected: string[] = [];
   for (let i = 0; i < 3; i++) {
     const trait = traits[Math.floor(Math.random() * traits.length)];
     if (!selected.includes(trait)) selected.push(trait);

@@ -1,5 +1,5 @@
 // Hotaru API 适配器（OpenAI 兼容格式）
-export class HotaruProvider implements AIProvider {
+export class HotaruProvider {
   private apiKey: string;
   private baseUrl: string;
   private model: string;
