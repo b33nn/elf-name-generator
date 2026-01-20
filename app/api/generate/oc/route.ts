@@ -7,6 +7,8 @@ type OC = {
   background: string;
 };
 
+type ParsedOC = Partial<Omit<OC, 'personality'>> & { personality?: string | string[] };
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -75,7 +77,7 @@ function parseOCResponse(raw: string, fallback: OC): OC {
     throw new Error('No JSON object found in AI response');
   }
   const jsonText = cleaned.slice(start, end + 1);
-  const parsed = JSON.parse(jsonText) as Partial<OC> & { personality?: string | string[] };
+  const parsed = JSON.parse(jsonText) as ParsedOC;
   const personality = Array.isArray(parsed.personality)
     ? parsed.personality.map((trait) => String(trait).trim()).filter(Boolean)
     : typeof parsed.personality === 'string'
