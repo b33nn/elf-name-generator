@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
 import { RunAnytimeProvider } from '@/lib/ai/runanytime-provider';
 
+type OC = {
+  class: string;
+  personality: string[];
+  background: string;
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, race, gender } = body;
-
-    // 检查是否配置了文本生成 API
+    const fallbackOC = buildMockOC(name, race, gender);
     const useAI = process.env.TEXT_API_KEY;
 
     if (useAI) {
-      // 使用真实 AI API
       const textProvider = new RunAnytimeProvider(
         process.env.TEXT_API_KEY!,
         process.env.TEXT_API_URL,
@@ -26,34 +30,24 @@ Please provide:
 2. Three personality traits (comma-separated)
 3. A brief background story (2-3 sentences)
 
-Format your response as JSON:
+Format your response as JSON. Return ONLY valid JSON, no markdown or extra text:
 {
   "class": "...",
   "personality": ["...", "...", "..."],
   "background": "..."
 }`;
 
-      const response = await textProvider.generateText(prompt);
-
-      // 清理 AI 返回的内容，移除可能的 markdown 代码块标记
-      let cleanedResponse = response.trim();
-      if (cleanedResponse.startsWith('```json')) {
-        cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-      } else if (cleanedResponse.startsWith('```')) {
-        cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      try {
+        const response = await textProvider.generateText(prompt);
+        const oc = parseOCResponse(response, fallbackOC);
+        return NextResponse.json({ oc });
+      } catch (error) {
+        console.error('OC generation error:', error);
+        return NextResponse.json({ oc: fallbackOC });
       }
-
-      const oc = JSON.parse(cleanedResponse);
-      return NextResponse.json({ oc });
-    } else {
-      // 使用模拟数据（开发模式）
-      const mockOC = {
-        class: getRandomClass(race),
-        personality: getRandomPersonality(),
-        background: `${name} is a ${gender || 'mysterious'} ${race} with a rich history. Born under the ancient stars, they have dedicated their life to mastering the arcane arts and protecting their homeland from dark forces.`
-      };
-      return NextResponse.json({ oc: mockOC });
     }
+
+    return NextResponse.json({ oc: fallbackOC });
   } catch (error) {
     console.error('OC generation error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -63,6 +57,44 @@ Format your response as JSON:
       hasApiKey: !!process.env.TEXT_API_KEY
     }, { status: 500 });
   }
+}
+
+function buildMockOC(name: string, race: string, gender?: string): OC {
+  return {
+    class: getRandomClass(race),
+    personality: getRandomPersonality(),
+    background: `${name} is a ${gender || 'mysterious'} ${race} with a rich history. Born under the ancient stars, they have dedicated their life to mastering the arcane arts and protecting their homeland from dark forces.`
+  };
+}
+
+function parseOCResponse(raw: string, fallback: OC): OC {
+  const cleaned = stripCodeFences(raw);
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1 || end <= start) {
+    throw new Error('No JSON object found in AI response');
+  }
+  const jsonText = cleaned.slice(start, end + 1);
+  const parsed = JSON.parse(jsonText) as Partial<OC> & { personality?: string | string[] };
+  const personality = Array.isArray(parsed.personality)
+    ? parsed.personality.map((trait) => String(trait).trim()).filter(Boolean)
+    : typeof parsed.personality === 'string'
+      ? parsed.personality.split(',').map((trait) => trait.trim()).filter(Boolean)
+      : fallback.personality;
+
+  return {
+    class: typeof parsed.class === 'string' && parsed.class.trim() ? parsed.class.trim() : fallback.class,
+    personality: personality.length > 0 ? personality : fallback.personality,
+    background: typeof parsed.background === 'string' && parsed.background.trim() ? parsed.background.trim() : fallback.background
+  };
+}
+
+function stripCodeFences(text: string): string {
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```[a-zA-Z]*\s*/, '').replace(/\s*```$/, '');
+  }
+  return cleaned.trim();
 }
 
 function getRandomClass(race: string): string {
