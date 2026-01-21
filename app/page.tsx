@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { featuredCharacters } from '@/lib/featured-characters';
 import { AuthButton } from '@/components/AuthButton';
 
@@ -23,24 +23,227 @@ type Character = {
   imageUrl?: string;
 };
 
+type Gender = 'feminine' | 'masculine' | 'neutral';
+type Locale = 'en' | 'zh';
+
+const copy = {
+  en: {
+    nav: {
+      generator: 'Generator',
+      features: 'Features',
+      pricing: 'Pricing',
+    },
+    hero: {
+      kicker: 'Elf Name Generator',
+      title: 'Elf Name Generator',
+      subtitle: '& OC Creator',
+      description:
+        'Forge unique Elven identities with AI. Generate names, detailed backstories, and visualize your character in seconds.',
+    },
+    form: {
+      subrace: 'Elf Sub-race',
+      gender: 'Gender',
+      quantity: 'Quantity',
+      racesLoading: 'Loading races...',
+      submit: 'Summon Elf Character',
+      submitLoading: 'Summoning...',
+    },
+    ocLoading: {
+      class: 'Summoning...',
+      personality: 'Gathering traits...',
+      background: 'Weaving a new story from starlight.',
+    },
+    results: {
+      title: 'Generated Results',
+      countSingle: 'character',
+      countPlural: 'characters',
+      countSuffix: 'found',
+      portraitPending: 'Portrait Pending',
+      classRole: 'Class / Role',
+      classPlaceholder: 'Awaiting insight',
+      traits: 'Traits',
+      traitsPlaceholder: 'Generate an OC to reveal traits.',
+      background: 'Background Story',
+      backgroundPlaceholder: 'Summon an OC profile to reveal their lore and destiny.',
+      nameParts: 'Name Parts',
+      generateOc: 'Generate OC',
+      generatePortrait: 'Generate Portrait',
+      copy: 'Copy',
+      awaitingSummoning: 'Awaiting Summoning',
+      noCharactersTitle: 'No characters yet',
+      noCharactersDescription: 'Choose a sub-race and call forth your first elf.',
+      roster: 'Character Roster',
+    },
+    stats: {
+      creators: 'creators used today',
+    },
+    features: {
+      kicker: 'Featured',
+      title: 'Featured Elf Characters',
+      description:
+        'Explore our collection of unique elf names and characters. Each profile is crafted with rich backstories and meanings for fantasy worlds and RPG campaigns.',
+      note: 'Curated weekly from community summons and lorekeepers.',
+      badge: 'Archive',
+    },
+    about: {
+      title: 'About Elf Name Generator',
+      p1: 'Our Elf Name Generator is a powerful tool designed for fantasy writers, RPG players, and worldbuilders. Generate authentic elf names inspired by High Elves, Wood Elves, Dark Elves, Night Elves, and Blood Elves.',
+      p2: 'Each generated name comes with its meaning and etymology, helping you create believable characters for novels, campaigns, and original universes.',
+      racesTitle: 'Elf Race Types',
+      races: [
+        'High Elves: Noble and wise, masters of magic and ancient lore',
+        'Wood Elves: Swift and graceful, guardians of the ancient forests',
+        'Dark Elves: Cunning and ruthless, masters of shadow and deception',
+        'Night Elves: Mysterious and ancient, blessed by the moon and stars',
+        'Blood Elves: Elegant and proud, wielders of arcane power',
+      ],
+    },
+    gender: {
+      feminine: 'Female',
+      masculine: 'Male',
+      neutral: 'Neutral',
+    },
+    languageToggle: {
+      toZh: '中文',
+      toEn: 'EN',
+      ariaEn: 'Switch to English',
+      ariaZh: '切换到中文',
+    },
+    alerts: {
+      generateFailed: 'Failed to generate character',
+      unknown: 'Unknown error',
+    },
+  },
+  zh: {
+    nav: {
+      generator: '生成器',
+      features: '功能',
+      pricing: '定价',
+    },
+    hero: {
+      kicker: '精灵姓名生成器',
+      title: '精灵姓名生成器',
+      subtitle: '& OC 角色创作',
+      description: '用 AI 铸造独一无二的精灵身份。生成姓名、完整背景，并在数秒内可视化角色。',
+    },
+    form: {
+      subrace: '精灵亚种',
+      gender: '性别',
+      quantity: '数量',
+      racesLoading: '正在加载种族...',
+      submit: '召唤精灵角色',
+      submitLoading: '正在召唤...',
+    },
+    ocLoading: {
+      class: '召唤中...',
+      personality: '正在收集特质...',
+      background: '正在编织星光故事。',
+    },
+    results: {
+      title: '生成结果',
+      countSingle: '角色',
+      countPlural: '角色',
+      countSuffix: '已生成',
+      portraitPending: '画像待生成',
+      classRole: '职业 / 角色',
+      classPlaceholder: '等待启示',
+      traits: '性格特质',
+      traitsPlaceholder: '生成 OC 以解锁特质。',
+      background: '背景故事',
+      backgroundPlaceholder: '召唤 OC 档案以揭示其传说与命运。',
+      nameParts: '姓名构成',
+      generateOc: '生成 OC',
+      generatePortrait: '生成画像',
+      copy: '复制',
+      awaitingSummoning: '等待召唤',
+      noCharactersTitle: '暂无角色',
+      noCharactersDescription: '选择一个亚种并召唤你的第一位精灵。',
+      roster: '角色名单',
+    },
+    stats: {
+      creators: '今日已有创作者使用',
+    },
+    features: {
+      kicker: '精选',
+      title: '精选精灵角色',
+      description: '探索我们精选的精灵姓名与角色档案。每个档案都带有完整背景与含义，适用于幻想世界与 RPG 战役。',
+      note: '每周从社区召唤与典籍守护者中甄选。',
+      badge: '档案库',
+    },
+    about: {
+      title: '关于精灵姓名生成器',
+      p1: '精灵姓名生成器专为奇幻作者、RPG 玩家与世界观构建者打造。可生成受高等精灵、木精灵、黑暗精灵、暗夜精灵与血精灵启发的真实姓名。',
+      p2: '每个生成的名字都附带含义与词源，帮助你塑造可信的角色，用于小说、战役或原创宇宙。',
+      racesTitle: '精灵种族类型',
+      races: [
+        '高等精灵：高贵睿智，精通魔法与古老学识',
+        '木精灵：敏捷优雅，守护远古森林',
+        '黑暗精灵：狡黠残酷，掌控阴影与诡计',
+        '暗夜精灵：神秘古老，受月光与星辰祝福',
+        '血精灵：优雅自豪，驾驭奥术力量',
+      ],
+    },
+    gender: {
+      feminine: '女性',
+      masculine: '男性',
+      neutral: '中性',
+    },
+    languageToggle: {
+      toZh: '中文',
+      toEn: 'EN',
+      ariaEn: 'Switch to English',
+      ariaZh: '切换到中文',
+    },
+    alerts: {
+      generateFailed: '生成角色失败',
+      unknown: '未知错误',
+    },
+  },
+} as const;
+
+const genderOptions: Gender[] = ['feminine', 'masculine', 'neutral'];
+
+const countOptions = [1, 5, 10];
+
 export default function Home() {
   const [races, setRaces] = useState<Race[]>([]);
   const [selectedRace, setSelectedRace] = useState<string>('');
-  const [gender, setGender] = useState<string>('neutral');
+  const [gender, setGender] = useState<Gender>('neutral');
   const [count, setCount] = useState<number>(1);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [locale, setLocale] = useState<Locale>('en');
+
+  useEffect(() => {
+    const savedLocale = window.localStorage.getItem('elfforge-locale');
+    if (savedLocale === 'en' || savedLocale === 'zh') {
+      setLocale(savedLocale);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('elfforge-locale', locale);
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+  }, [locale]);
 
   useEffect(() => {
     fetch('/api/generate/name')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setRaces(data.races);
         if (data.races.length > 0) {
           setSelectedRace(data.races[0].id);
         }
       });
   }, []);
+
+  useEffect(() => {
+    if (characters.length === 0) return;
+    if (activeIndex >= characters.length) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, characters.length]);
 
   const handleGenerate = async () => {
     if (!selectedRace) return;
@@ -49,10 +252,11 @@ export default function Home() {
       const res = await fetch('/api/generate/name', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ raceId: selectedRace, gender, count })
+        body: JSON.stringify({ raceId: selectedRace, gender, count }),
       });
       const data = await res.json();
       setCharacters(data.characters);
+      setActiveIndex(0);
     } catch (error) {
       console.error('Failed to generate names:', error);
     } finally {
@@ -62,17 +266,24 @@ export default function Home() {
 
   const handleGenerateOC = async (index: number) => {
     const char = characters[index];
+    if (!char) return;
 
-    // 显示加载状态
     const updated = [...characters];
-    updated[index] = { ...updated[index], oc: { class: 'Loading...', personality: ['Loading...'], background: 'Generating character profile...' } };
+    updated[index] = {
+      ...updated[index],
+      oc: {
+        class: copy[locale].ocLoading.class,
+        personality: [copy[locale].ocLoading.personality],
+        background: copy[locale].ocLoading.background,
+      },
+    };
     setCharacters(updated);
 
     try {
       const res = await fetch('/api/generate/oc', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: char.name, race: char.raceId, gender })
+        body: JSON.stringify({ name: char.name, race: char.raceId, gender }),
       });
 
       if (!res.ok) {
@@ -90,9 +301,12 @@ export default function Home() {
       setCharacters(finalUpdated);
     } catch (error) {
       console.error('Failed to generate OC:', error);
-      alert(`Failed to generate character: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `${copy[locale].alerts.generateFailed}: ${
+          error instanceof Error ? error.message : copy[locale].alerts.unknown
+        }`
+      );
 
-      // 恢复到没有 OC 的状态
       const revertUpdated = [...characters];
       delete revertUpdated[index].oc;
       setCharacters(revertUpdated);
@@ -101,11 +315,12 @@ export default function Home() {
 
   const handleGenerateImage = async (index: number) => {
     const char = characters[index];
+    if (!char) return;
     try {
       const res = await fetch('/api/generate/image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: char.name, race: char.raceId, oc: char.oc })
+        body: JSON.stringify({ name: char.name, race: char.raceId, oc: char.oc }),
       });
       const data = await res.json();
       const updated = [...characters];
@@ -116,190 +331,483 @@ export default function Home() {
     }
   };
 
+  const activeCharacter = characters[activeIndex];
+  const t = copy[locale];
+  const genderLabel = t.gender[gender];
+  const labelTracking = locale === 'en' ? 'uppercase tracking-[0.08em]' : 'tracking-normal';
+  const actionTracking = locale === 'en' ? 'uppercase tracking-[0.1em]' : 'tracking-normal';
+  const resultsCountLabel =
+    locale === 'en'
+      ? `${characters.length} ${
+          characters.length === 1 ? t.results.countSingle : t.results.countPlural
+        } ${t.results.countSuffix}`
+      : `已生成 ${characters.length} 个角色`;
+  const languageLabel = locale === 'en' ? t.languageToggle.toZh : t.languageToggle.toEn;
+  const languageAriaLabel = locale === 'en' ? t.languageToggle.ariaZh : t.languageToggle.ariaEn;
+  const getRaceLabel = (raceId: string) =>
+    races.find((race) => race.id === raceId)?.displayName ?? raceId;
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header with Auth */}
-        <div className="flex justify-end mb-8">
-          <AuthButton />
+    <main className="min-h-screen text-emerald-950">
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-40 top-10 h-80 w-80 rounded-full bg-emerald-200/40 blur-[110px]" />
+          <div className="absolute -right-32 -top-20 h-96 w-96 rounded-full bg-amber-200/50 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-100/60 blur-[120px]" />
         </div>
 
-        {/* Hero Section */}
-        <header className="text-center mb-16">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
-            Elf Name Generator & OC Creator
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Generate unique elf names and create original characters with AI-powered tools.
-            Perfect for fantasy writers, RPG players, and worldbuilders.
-          </p>
+        <header className="relative bg-[#0b3d2e] text-emerald-50 shadow-[0_8px_30px_-20px_rgba(7,24,18,0.9)]">
+          <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-900/70 ring-1 ring-emerald-400/40">
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-5 w-5 text-amber-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
+                  <path d="M12 2l2.6 6 6.4.6-4.8 4.3 1.4 6.2L12 15.7 6.4 19.1l1.4-6.2L3 8.6l6.4-.6L12 2z" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-display text-lg tracking-[0.35em]">ELFFORGE</span>
+                <span className="rounded-full bg-emerald-800/70 px-2 py-1 text-[10px] uppercase tracking-[0.3em] text-amber-100">
+                  v2.0 AI
+                </span>
+              </div>
+            </div>
+            <div className={`hidden items-center gap-8 text-[11px] text-emerald-100/70 md:flex ${labelTracking}`}>
+              <a href="#generator" className="transition hover:text-amber-200">
+                {t.nav.generator}
+              </a>
+              <a href="#features" className="transition hover:text-amber-200">
+                {t.nav.features}
+              </a>
+              <a href="#pricing" className="transition hover:text-amber-200">
+                {t.nav.pricing}
+              </a>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setLocale(locale === 'en' ? 'zh' : 'en')}
+                aria-label={languageAriaLabel}
+                className={`inline-flex items-center gap-2 rounded-full border border-emerald-700/60 bg-emerald-900/60 px-3 py-1 text-[10px] text-emerald-100/80 transition hover:bg-emerald-800/80 ${labelTracking}`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                  <path d="M2 12h20" />
+                  <path d="M12 2a15 15 0 010 20" />
+                </svg>
+                {languageLabel}
+              </button>
+              <AuthButton locale={locale} />
+            </div>
+          </nav>
         </header>
 
-        {/* Generator Tool Section */}
-        <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-8 mb-12 border border-slate-700">
-          <h2 className="text-2xl font-bold mb-6">Generate Your Elf Name</h2>
+        <section
+          id="generator"
+          className="relative mx-auto max-w-6xl px-6 pb-16 pt-10 lg:pb-20 lg:pt-14"
+        >
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-start">
+            <div className="space-y-10 animate-rise">
+              <div>
+                <p className={`text-xs text-emerald-700 ${labelTracking}`}>{t.hero.kicker}</p>
+                <h1 className="font-display mt-4 text-4xl leading-tight text-emerald-950 sm:text-5xl lg:text-6xl">
+                  {t.hero.title}
+                  <span className="block text-emerald-700">{t.hero.subtitle}</span>
+                </h1>
+                <p className="mt-4 max-w-md text-lg text-emerald-700">
+                  {t.hero.description}
+                </p>
+              </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
-            {/* Race Selector */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Race</label>
-              <select
-                value={selectedRace}
-                onChange={(e) => setSelectedRace(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                {races.map(race => (
-                  <option key={race.id} value={race.id}>{race.displayName}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Gender Selector */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Gender</label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="neutral">Neutral</option>
-                <option value="feminine">Feminine</option>
-                <option value="masculine">Masculine</option>
-              </select>
-            </div>
-
-            {/* Count Selector */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Count</label>
-              <select
-                value={count}
-                onChange={(e) => setCount(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="1">1</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGenerate}
-            disabled={loading || !selectedRace}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-bold text-lg transition-all transform hover:scale-105"
-          >
-            {loading ? 'Generating...' : 'Generate Names'}
-          </button>
-        </div>
-
-        {/* Results Section */}
-        {characters.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-6">Generated Characters</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {characters.map((char, idx) => (
-                <div key={idx} className="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hover:border-purple-500 transition-all">
-                  {char.imageUrl && (
-                    <div className="mb-4 h-48 bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-lg flex items-center justify-center">
-                      <div className="text-6xl">✨</div>
+              <div className="rounded-[24px] border border-emerald-100/80 bg-white/80 p-6 shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+                <div className="space-y-6">
+                  <div>
+                    <label className={`text-xs font-semibold text-emerald-700 ${labelTracking}`}>
+                      {t.form.subrace}
+                    </label>
+                    <div className="relative mt-2">
+                      <select
+                        value={selectedRace}
+                        onChange={(e) => setSelectedRace(e.target.value)}
+                        className="w-full appearance-none rounded-xl border border-emerald-100 bg-white/90 px-4 py-3 text-sm font-semibold text-emerald-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                      >
+                        {races.length === 0 && (
+                          <option value="" disabled>
+                            {t.form.racesLoading}
+                          </option>
+                        )}
+                        {races.map((race) => (
+                          <option key={race.id} value={race.id}>
+                            {race.displayName}
+                          </option>
+                        ))}
+                      </select>
+                      <svg
+                        viewBox="0 0 20 20"
+                        aria-hidden="true"
+                        className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-500"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                      >
+                        <path d="M6 8l4 4 4-4" />
+                      </svg>
                     </div>
-                  )}
-                  <h3 className="text-2xl font-bold mb-2 text-purple-400">{char.name}</h3>
-                  <p className="text-gray-300 mb-4">{char.meaning}</p>
-
-                  {char.oc && (
-                    <div className="mb-4 p-3 bg-slate-700/50 rounded-lg">
-                      <p className="text-sm text-purple-300 mb-1">Class: {char.oc.class}</p>
-                      <p className="text-sm text-gray-400 mb-2">Personality: {char.oc.personality.join(', ')}</p>
-                      <p className="text-xs text-gray-500">{char.oc.background}</p>
-                    </div>
-                  )}
-
-                  <div className="space-y-2 mb-4">
-                    <p className="text-sm text-gray-400">Name Parts:</p>
-                    {char.parts.map((part, i) => (
-                      <div key={i} className="text-sm">
-                        <span className="text-purple-300">{part.text}</span>
-                        <span className="text-gray-500"> - {part.meaning}</span>
-                      </div>
-                    ))}
                   </div>
 
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => navigator.clipboard.writeText(char.name)}
-                      className="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors"
-                    >
-                      Copy Name
-                    </button>
-                    {!char.oc && (
-                      <button
-                        onClick={() => handleGenerateOC(idx)}
-                        className="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm transition-colors"
+                  <div>
+                    <label className={`text-xs font-semibold text-emerald-700 ${labelTracking}`}>
+                      {t.form.gender}
+                    </label>
+                    <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl border border-emerald-100 bg-white/90 p-2">
+                      {genderOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => setGender(option)}
+                          className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                            gender === option
+                              ? 'bg-emerald-900 text-amber-100 shadow-[0_10px_30px_-20px_rgba(10,40,30,0.8)]'
+                              : 'text-emerald-700 hover:bg-emerald-50'
+                          }`}
+                          aria-pressed={gender === option}
+                        >
+                          {t.gender[option]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`text-xs font-semibold text-emerald-700 ${labelTracking}`}>
+                      {t.form.quantity}
+                    </label>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      {countOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => setCount(option)}
+                          className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                            count === option
+                              ? 'border-emerald-800 bg-emerald-900 text-amber-100'
+                              : 'border-emerald-100 bg-white/90 text-emerald-700 hover:bg-emerald-50'
+                          }`}
+                        >
+                          <span
+                            className={`h-2 w-2 rounded-full border border-emerald-700 ${
+                              count === option ? 'bg-emerald-200' : 'bg-transparent'
+                            }`}
+                          />
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleGenerate}
+                    disabled={loading || !selectedRace}
+                    className={`w-full rounded-xl bg-emerald-900 px-6 py-4 text-sm font-semibold text-amber-100 shadow-[0_20px_40px_-28px_rgba(10,40,30,0.9)] transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60 ${actionTracking}`}
+                  >
+                    {loading ? t.form.submitLoading : t.form.submit}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-sm text-emerald-700">
+                <div className="flex -space-x-2">
+                  <div className="h-8 w-8 rounded-full border border-white bg-emerald-200" />
+                  <div className="h-8 w-8 rounded-full border border-white bg-amber-200" />
+                  <div className="h-8 w-8 rounded-full border border-white bg-emerald-100" />
+                </div>
+                <span>
+                  <span className="font-semibold text-emerald-950">10,000+</span> {t.stats.creators}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-6 animate-rise-delay-1">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-display text-2xl text-emerald-950">{t.results.title}</h2>
+                <span className={`text-xs text-emerald-600 ${labelTracking}`}>
+                  {resultsCountLabel}
+                </span>
+              </div>
+
+              {activeCharacter ? (
+                <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-6 shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+                  <div className="grid gap-6 md:grid-cols-[220px_1fr]">
+                    <div className="relative overflow-hidden rounded-2xl bg-emerald-900/90">
+                      {activeCharacter.imageUrl ? (
+                        <img
+                          src={activeCharacter.imageUrl}
+                          alt={`${activeCharacter.name} portrait`}
+                          className="h-72 w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-72 flex-col items-center justify-center gap-3 text-center text-amber-100/80">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-amber-200/50 bg-emerald-800/80">
+                            <svg
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                              className="h-8 w-8 text-amber-200"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                            >
+                              <path d="M12 3l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L4.8 8.2l5-.7L12 3z" />
+                            </svg>
+                          </div>
+                          <span className={`text-xs ${labelTracking}`}>
+                            {t.results.portraitPending}
+                          </span>
+                        </div>
+                      )}
+                      <div
+                        className={`absolute bottom-3 left-3 right-3 rounded-full bg-emerald-950/70 px-3 py-1 text-[10px] text-amber-100 ${labelTracking}`}
                       >
-                        Generate OC
-                      </button>
-                    )}
-                    {char.oc && !char.imageUrl && (
-                      <button
-                        onClick={() => handleGenerateImage(idx)}
-                        className="w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg text-sm transition-colors"
-                      >
-                        Generate Image
-                      </button>
-                    )}
+                        {getRaceLabel(activeCharacter.raceId)} - {genderLabel}
+                      </div>
+                    </div>
+
+                    <div className="space-y-5">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <span
+                          className={`rounded-full bg-amber-100/80 px-3 py-1 text-[10px] font-semibold text-amber-800 ${labelTracking}`}
+                        >
+                          {getRaceLabel(activeCharacter.raceId)} - {genderLabel}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => navigator.clipboard.writeText(activeCharacter.name)}
+                          className={`inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/90 px-3 py-1 text-[10px] font-semibold text-emerald-700 transition hover:bg-emerald-50 ${labelTracking}`}
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                          >
+                            <path d="M8 8h10v12H8z" />
+                            <path d="M6 4h10v4H6z" />
+                          </svg>
+                          {t.results.copy}
+                        </button>
+                      </div>
+
+                      <div>
+                        <h3 className="font-display text-3xl text-emerald-950">
+                          {activeCharacter.name}
+                        </h3>
+                        <p className="mt-1 text-sm italic text-emerald-700">
+                          "{activeCharacter.meaning}"
+                        </p>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+                          <p className={`text-[10px] font-semibold text-emerald-600 ${labelTracking}`}>
+                            {t.results.classRole}
+                          </p>
+                          <p className="mt-3 text-base font-semibold text-emerald-900">
+                            {activeCharacter.oc?.class ?? t.results.classPlaceholder}
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+                          <p className={`text-[10px] font-semibold text-emerald-600 ${labelTracking}`}>
+                            {t.results.traits}
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {activeCharacter.oc?.personality?.length ? (
+                              activeCharacter.oc.personality.map((trait) => (
+                                <span
+                                  key={trait}
+                                  className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm"
+                                >
+                                  {trait}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-sm text-emerald-700">
+                                {t.results.traitsPlaceholder}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl border border-emerald-100 bg-amber-50/70 p-4">
+                        <p
+                          className={`flex items-center gap-2 text-[10px] font-semibold text-amber-700 ${labelTracking}`}
+                        >
+                          <span className="h-2 w-2 rounded-full bg-amber-400" />
+                          {t.results.background}
+                        </p>
+                        <p className="mt-3 text-sm leading-relaxed text-emerald-900">
+                          {activeCharacter.oc?.background ?? t.results.backgroundPlaceholder}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl border border-emerald-100 bg-white/90 p-4">
+                        <p className={`text-[10px] font-semibold text-emerald-600 ${labelTracking}`}>
+                          {t.results.nameParts}
+                        </p>
+                        <div className="mt-3 space-y-2 text-sm text-emerald-900">
+                          {activeCharacter.parts.map((part, idx) => (
+                            <div
+                              key={`${part.text}-${idx}`}
+                              className="flex items-center justify-between border-b border-emerald-100/60 pb-2 last:border-b-0 last:pb-0"
+                            >
+                              <span className="font-semibold">{part.text}</span>
+                              <span className="text-emerald-600">{part.meaning}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3">
+                        {!activeCharacter.oc && (
+                          <button
+                            type="button"
+                            onClick={() => handleGenerateOC(activeIndex)}
+                            className={`rounded-full border border-emerald-800 bg-emerald-900 px-5 py-2 text-xs font-semibold text-amber-100 transition hover:bg-emerald-800 ${actionTracking}`}
+                          >
+                            {t.results.generateOc}
+                          </button>
+                        )}
+                        {activeCharacter.oc && !activeCharacter.imageUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleGenerateImage(activeIndex)}
+                            className={`rounded-full border border-amber-300 bg-amber-200/30 px-5 py-2 text-xs font-semibold text-amber-900 transition hover:bg-amber-200/50 ${actionTracking}`}
+                          >
+                            {t.results.generatePortrait}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ) : (
+                <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-8 text-center shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+                  <div className="mx-auto flex h-48 w-full max-w-sm items-center justify-center rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70">
+                    <span className={`text-xs text-emerald-600 ${labelTracking}`}>
+                      {t.results.awaitingSummoning}
+                    </span>
+                  </div>
+                  <h3 className="font-display mt-6 text-2xl text-emerald-950">
+                    {t.results.noCharactersTitle}
+                  </h3>
+                  <p className="mt-2 text-sm text-emerald-700">
+                    {t.results.noCharactersDescription}
+                  </p>
+                </div>
+              )}
+
+              {characters.length > 1 && (
+                <div className="rounded-[20px] border border-emerald-100/80 bg-white/80 p-4 backdrop-blur">
+                  <p className={`text-[10px] font-semibold text-emerald-600 ${labelTracking}`}>
+                    {t.results.roster}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {characters.map((char, idx) => (
+                      <button
+                        key={`${char.name}-${idx}`}
+                        type="button"
+                        onClick={() => setActiveIndex(idx)}
+                        className={`max-w-[200px] truncate rounded-full px-3 py-1 text-xs font-semibold transition ${labelTracking} ${
+                          idx === activeIndex
+                            ? 'bg-emerald-900 text-amber-100'
+                            : 'bg-white/90 text-emerald-700 hover:bg-emerald-50'
+                        }`}
+                        aria-pressed={idx === activeIndex}
+                      >
+                        {idx + 1}. {char.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="relative mx-auto max-w-6xl px-6 pb-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="space-y-4 animate-rise-delay-1">
+              <p className={`text-xs text-emerald-600 ${labelTracking}`}>{t.features.kicker}</p>
+              <h2 className="font-display text-3xl text-emerald-950">
+                {t.features.title}
+              </h2>
+              <p className="text-emerald-700">
+                {t.features.description}
+              </p>
+              <div className="rounded-2xl border border-emerald-100/80 bg-white/80 p-4 text-sm text-emerald-700">
+                {t.features.note}
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-rise-delay-2">
+              {featuredCharacters.map((char) => (
+                <article
+                  key={char.id}
+                  className="group rounded-2xl border border-emerald-100/80 bg-white/80 p-4 shadow-[0_20px_50px_-40px_rgba(15,45,34,0.6)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_-45px_rgba(15,45,34,0.8)]"
+                >
+                  <div className="relative mb-4 h-40 overflow-hidden rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950">
+                    <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.3),_transparent_55%)]" />
+                    <div
+                      className={`absolute bottom-3 left-3 rounded-full bg-emerald-950/70 px-3 py-1 text-[10px] text-amber-100 ${labelTracking}`}
+                    >
+                      {t.features.badge}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-display text-2xl text-emerald-950">{char.name}</h3>
+                    <span
+                      className={`rounded-full bg-amber-100/80 px-2 py-1 text-[10px] font-semibold text-amber-800 ${labelTracking}`}
+                    >
+                      {char.race}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm italic text-emerald-600">{char.meaning}</p>
+                  <p className="mt-3 text-sm text-emerald-800">{char.description}</p>
+                </article>
               ))}
             </div>
           </div>
-        )}
+        </section>
 
-        {/* Featured Characters Gallery */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-4">Featured Elf Characters</h2>
-          <p className="text-gray-400 mb-8">
-            Explore our collection of unique elf names and characters. Each character is carefully crafted with rich backstories and meanings, perfect for your fantasy world, RPG campaign, or creative writing project.
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCharacters.map((char) => (
-              <article key={char.id} className="bg-slate-800/50 backdrop-blur rounded-xl overflow-hidden border border-slate-700 hover:border-purple-500 transition-all">
-                <div className="h-48 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
-                  <div className="text-6xl">✨</div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-2xl font-bold text-purple-400">{char.name}</h3>
-                    <span className="text-xs px-2 py-1 bg-purple-900/50 rounded-full">{char.race}</span>
-                  </div>
-                  <p className="text-sm text-gray-400 mb-3">{char.meaning}</p>
-                  <p className="text-gray-300 text-sm">{char.description}</p>
-                </div>
-              </article>
-            ))}
+        <section id="pricing" className="relative mx-auto max-w-6xl px-6 pb-24">
+          <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-8 shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+            <h2 className="font-display text-3xl text-emerald-950">{t.about.title}</h2>
+            <div className="mt-4 space-y-4 text-emerald-700">
+              <p>{t.about.p1}</p>
+              <p>{t.about.p2}</p>
+              <h3 className="font-display text-2xl text-emerald-950">{t.about.racesTitle}</h3>
+              <ul className="grid gap-2 text-sm text-emerald-800 sm:grid-cols-2">
+                {t.about.races.map((race) => (
+                  <li key={race}>{race}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-
-        {/* SEO Content Section */}
-        <div className="prose prose-invert max-w-none">
-          <h2 className="text-3xl font-bold mb-4">About Elf Name Generator</h2>
-          <div className="text-gray-300 space-y-4">
-            <p>
-              Our Elf Name Generator is a powerful tool designed for fantasy writers, RPG players, and worldbuilders. Generate authentic elf names inspired by various fantasy traditions including High Elves, Wood Elves, Dark Elves, Night Elves, and Blood Elves.
-            </p>
-            <p>
-              Each generated name comes with its meaning and etymology, helping you create rich, believable characters for your fantasy world. Whether you're creating characters for Dungeons & Dragons, writing a fantasy novel, or building your own fictional universe, our generator provides unique and memorable elf names.
-            </p>
-            <h3 className="text-2xl font-bold mt-8 mb-4">Elf Race Types</h3>
-            <ul className="list-disc list-inside space-y-2">
-              <li><strong>High Elves:</strong> Noble and wise, masters of magic and ancient lore</li>
-              <li><strong>Wood Elves:</strong> Swift and graceful, guardians of the ancient forests</li>
-              <li><strong>Dark Elves:</strong> Cunning and ruthless, masters of shadow and deception</li>
-              <li><strong>Night Elves:</strong> Mysterious and ancient, blessed by the moon and stars</li>
-              <li><strong>Blood Elves:</strong> Elegant and proud, wielders of arcane power</li>
-            </ul>
-          </div>
-        </div>
+        </section>
       </div>
     </main>
   );

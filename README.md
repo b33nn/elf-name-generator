@@ -32,15 +32,27 @@
 创建 `.env.local` 文件：
 
 ```env
-# 文本生成 API（必需）
-TEXT_API_KEY=your_api_key_here
-TEXT_API_URL=https://api.hotaruapi.top
-TEXT_MODEL=claude-sonnet-4-5-20250929
+# AI 服务配置
+AI_PROVIDER=hotaru  # 可选：hotaru, gemini, qwen, openai
 
-# 图片生成 API（可选）
-IMAGE_API_KEY=your_api_key_here
-IMAGE_API_URL=https://api.hotaruapi.top
-IMAGE_MODEL=gemini-3-pro-image-preview
+# RunAnytime API（用于 OC 生成，必需）
+RUNANYTIME_API_KEY=your_runanytime_api_key_here
+RUNANYTIME_BASE_URL=https://runanytime.hxi.me
+RUNANYTIME_MODEL=claude-sonnet-4-5-20250929
+
+# Hotaru API（可选，用于图片生成）
+HOTARU_API_KEY=your_hotaru_api_key_here
+HOTARU_BASE_URL=https://api.hotaruapi.top
+HOTARU_MODEL=gemini-3-pro-image-preview
+
+# Google Gemini API（可选）
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# 通义千问 API（可选）
+QWEN_API_KEY=your_qwen_api_key_here
+
+# OpenAI API（可选）
+OPENAI_API_KEY=your_openai_api_key_here
 
 # NextAuth（可选，用于用户登录）
 NEXTAUTH_URL=http://localhost:3000

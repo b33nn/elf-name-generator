@@ -14,21 +14,21 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, race, gender } = body;
     const fallbackOC = buildMockOC(name, race, gender);
-    const hasApiKey = !!process.env.TEXT_API_KEY;
+    const hasApiKey = !!process.env.RUNANYTIME_API_KEY;
     const useAI = hasApiKey;
 
     console.info('[oc] request', { hasApiKey, race, gender: gender || 'neutral' });
 
     if (useAI) {
       console.info('[oc] ai config', {
-        hasUrl: !!process.env.TEXT_API_URL,
-        hasModel: !!process.env.TEXT_MODEL
+        hasUrl: !!process.env.RUNANYTIME_BASE_URL,
+        hasModel: !!process.env.RUNANYTIME_MODEL
       });
 
       const textProvider = new RunAnytimeProvider(
-        process.env.TEXT_API_KEY!,
-        process.env.TEXT_API_URL,
-        process.env.TEXT_MODEL
+        process.env.RUNANYTIME_API_KEY!,
+        process.env.RUNANYTIME_BASE_URL,
+        process.env.RUNANYTIME_MODEL
       );
 
       const prompt = `Generate a detailed character profile for an elf named ${name}.
@@ -59,7 +59,7 @@ Format your response as JSON. Return ONLY valid JSON, no markdown or extra text:
       }
     }
 
-    console.warn('[oc] missing TEXT_API_KEY, using fallback');
+    console.warn('[oc] missing RUNANYTIME_API_KEY, using fallback');
     return NextResponse.json({ oc: fallbackOC });
   } catch (error) {
     console.error('[oc] request error:', error);
@@ -67,7 +67,7 @@ Format your response as JSON. Return ONLY valid JSON, no markdown or extra text:
     return NextResponse.json({
       error: 'Failed to generate OC',
       details: errorMessage,
-      hasApiKey: !!process.env.TEXT_API_KEY
+      hasApiKey: !!process.env.RUNANYTIME_API_KEY
     }, { status: 500 });
   }
 }
