@@ -85,6 +85,102 @@ const copy = {
       note: 'Curated weekly from community summons and lorekeepers.',
       badge: 'Archive',
     },
+    pricing: {
+      kicker: 'Pricing',
+      title: 'Choose Your Summoning Tier',
+      description:
+        'Flexible plans for writers, parties, and studios. Switch tiers anytime as your world grows.',
+      billing: {
+        monthly: 'Monthly',
+        yearly: 'Yearly',
+        note: 'Save 20% with yearly',
+        perMonth: '/ mo',
+        billedMonthly: 'billed monthly',
+        billedYearly: 'billed yearly',
+      },
+      badges: {
+        popular: 'Most Popular',
+        value: 'Best Value',
+      },
+      cta: 'Choose Plan',
+      includedTitle: 'All plans include',
+      includedItems: [
+        '5 elf sub-races',
+        'Name meaning + etymology',
+        'OC backstory generator',
+        'Character roster',
+        'Export & copy tools',
+      ],
+      note: 'Cancel anytime. No hidden fees.',
+      plans: [
+        {
+          id: 'initiate',
+          name: 'Initiate',
+          description: 'For casual lore drops',
+          priceMonthly: '9',
+          priceYearly: '7',
+          strikeMonthly: '12',
+          strikeYearly: '10',
+          features: [
+            '200 names / mo',
+            '20 OC profiles',
+            '5 portraits',
+            'Standard generation speed',
+            'Community gallery access',
+          ],
+        },
+        {
+          id: 'ranger',
+          name: 'Ranger',
+          description: 'For weekly campaigns',
+          priceMonthly: '19',
+          priceYearly: '15',
+          strikeMonthly: '24',
+          strikeYearly: '19',
+          features: [
+            '800 names / mo',
+            '80 OC profiles',
+            '20 portraits',
+            'Priority queue',
+            'Lore export presets',
+          ],
+        },
+        {
+          id: 'lorekeeper',
+          name: 'Lorekeeper',
+          description: 'For long-form worldbuilding',
+          priceMonthly: '39',
+          priceYearly: '29',
+          strikeMonthly: '49',
+          strikeYearly: '39',
+          highlight: 'popular',
+          features: [
+            '2,000 names / mo',
+            '300 OC profiles',
+            '80 portraits',
+            'HD portrait styling',
+            'Private roster vault',
+          ],
+        },
+        {
+          id: 'mythic',
+          name: 'Mythic',
+          description: 'For studios and teams',
+          priceMonthly: '79',
+          priceYearly: '59',
+          strikeMonthly: '99',
+          strikeYearly: '79',
+          highlight: 'value',
+          features: [
+            'Unlimited names',
+            '1,000 OC profiles',
+            '300 portraits',
+            'Team workspaces',
+            'Commercial rights',
+          ],
+        },
+      ],
+    },
     about: {
       title: 'About Elf Name Generator',
       p1: 'Our Elf Name Generator is a powerful tool designed for fantasy writers, RPG players, and worldbuilders. Generate authentic elf names inspired by High Elves, Wood Elves, Dark Elves, Night Elves, and Blood Elves.',
@@ -170,6 +266,102 @@ const copy = {
       note: '每周从社区召唤与典籍守护者中甄选。',
       badge: '档案库',
     },
+    pricing: {
+      kicker: '??',
+      title: '????????',
+      description: '??????????????????????????',
+      billing: {
+        monthly: '??',
+        yearly: '??',
+        note: '???? 20%',
+        perMonth: '/ ?',
+        billedMonthly: '????',
+        billedYearly: '????',
+      },
+      badges: {
+        popular: '????',
+        value: '?????',
+      },
+      cta: '????',
+      includedTitle: '??????',
+      includedItems: [
+        '5 ?????',
+        '???????',
+        'OC ????',
+        '????',
+        '???????',
+      ],
+      note: '???????????',
+      plans: [
+        {
+          id: 'initiate',
+          name: '??',
+          description: '??????',
+          priceMonthly: '9',
+          priceYearly: '7',
+          strikeMonthly: '12',
+          strikeYearly: '10',
+          features: [
+            '?? 200 ???',
+            '20 ? OC ??',
+            '5 ???',
+            '??????',
+            '??????',
+          ],
+        },
+        {
+          id: 'ranger',
+          name: '??',
+          description: '??????',
+          priceMonthly: '19',
+          priceYearly: '15',
+          strikeMonthly: '24',
+          strikeYearly: '19',
+          features: [
+            '?? 800 ???',
+            '80 ? OC ??',
+            '20 ???',
+            '????',
+            '???????',
+          ],
+        },
+        {
+          id: 'lorekeeper',
+          name: '??',
+          description: '???????',
+          priceMonthly: '39',
+          priceYearly: '29',
+          strikeMonthly: '49',
+          strikeYearly: '39',
+          highlight: 'popular',
+          features: [
+            '?? 2,000 ???',
+            '300 ? OC ??',
+            '80 ???',
+            '??????',
+            '?????',
+          ],
+        },
+        {
+          id: 'mythic',
+          name: '??',
+          description: '?????/??',
+          priceMonthly: '79',
+          priceYearly: '59',
+          strikeMonthly: '99',
+          strikeYearly: '79',
+          highlight: 'value',
+          features: [
+            '?????',
+            '1,000 ? OC ??',
+            '300 ???',
+            '?????',
+            '????',
+          ],
+        },
+      ],
+    },
+
     about: {
       title: '关于精灵姓名生成器',
       p1: '精灵姓名生成器专为奇幻作者、RPG 玩家与世界观构建者打造。可生成受高等精灵、木精灵、黑暗精灵、暗夜精灵与血精灵启发的真实姓名。',
@@ -217,6 +409,7 @@ export default function Home() {
   const [error, setError] = useState<string>('');
   const [loadingOC, setLoadingOC] = useState<Set<number>>(new Set());
   const [loadingImage, setLoadingImage] = useState<Set<number>>(new Set());
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const resultsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -921,6 +1114,153 @@ export default function Home() {
         </section>
 
         <section id="pricing" className="relative mx-auto max-w-6xl px-6 pb-24">
+          <div className="space-y-10">
+            <div className="mx-auto max-w-3xl space-y-4 text-center animate-rise-delay-1">
+              <p className={`text-xs text-emerald-600 ${labelTracking}`}>{t.pricing.kicker}</p>
+              <h2 className="font-display text-3xl font-bold text-emerald-950 sm:text-4xl">
+                {t.pricing.title}
+              </h2>
+              <p className="text-emerald-700 max-w-2xl mx-auto leading-relaxed">
+                {t.pricing.description}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <div className="inline-flex items-center rounded-full border border-emerald-100/80 bg-white/90 p-1 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`rounded-full px-4 py-1.5 text-[10px] font-semibold transition ${labelTracking} ${
+                    billingCycle === 'monthly'
+                      ? 'bg-emerald-900 text-amber-100'
+                      : 'text-emerald-700 hover:text-emerald-900'
+                  }`}
+                >
+                  {t.pricing.billing.monthly}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`rounded-full px-4 py-1.5 text-[10px] font-semibold transition ${labelTracking} ${
+                    billingCycle === 'yearly'
+                      ? 'bg-emerald-900 text-amber-100'
+                      : 'text-emerald-700 hover:text-emerald-900'
+                  }`}
+                >
+                  {t.pricing.billing.yearly}
+                </button>
+              </div>
+              <span className="rounded-full border border-emerald-100 bg-emerald-50/80 px-3 py-1 text-[10px] text-emerald-700">
+                {t.pricing.billing.note}
+              </span>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-4 animate-rise-delay-2">
+              {t.pricing.plans.map((plan) => {
+                const isPopular = plan.highlight === 'popular';
+                const isValue = plan.highlight === 'value';
+                const price = billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
+                const strike = billingCycle === 'monthly' ? plan.strikeMonthly : plan.strikeYearly;
+                const billedLabel =
+                  billingCycle === 'monthly'
+                    ? t.pricing.billing.billedMonthly
+                    : t.pricing.billing.billedYearly;
+
+                return (
+                  <article
+                    key={plan.id}
+                    className={`relative flex h-full flex-col rounded-[24px] border p-5 shadow-sm transition ${
+                      isPopular
+                        ? 'border-emerald-900 bg-emerald-900 text-amber-100 shadow-[0_30px_70px_-45px_rgba(5,20,15,0.9)]'
+                        : 'border-emerald-100/80 bg-white/85 text-emerald-900'
+                    } ${isValue ? 'ring-1 ring-amber-200/70' : ''}`}
+                  >
+                    {plan.highlight && (
+                      <span
+                        className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[9px] font-semibold ${
+                          isPopular
+                            ? 'bg-amber-200/20 text-amber-100'
+                            : 'bg-amber-100/80 text-amber-800'
+                        } ${labelTracking}`}
+                      >
+                        {plan.highlight === 'popular'
+                          ? t.pricing.badges.popular
+                          : t.pricing.badges.value}
+                      </span>
+                    )}
+                    <div className="mt-4">
+                      <h3 className="font-display text-xl">{plan.name}</h3>
+                      <p className={`mt-2 text-xs ${isPopular ? 'text-amber-100/70' : 'text-emerald-600'}`}>
+                        {plan.description}
+                      </p>
+                    </div>
+                    <div className="mt-5 space-y-2">
+                      {strike && (
+                        <p className={`text-xs line-through ${isPopular ? 'text-amber-100/50' : 'text-emerald-400'}`}>
+                          ${strike}
+                        </p>
+                      )}
+                      <div className="flex items-end gap-2">
+                        <span className={`text-4xl font-semibold ${isPopular ? 'text-amber-100' : 'text-emerald-950'}`}>
+                          ${price}
+                        </span>
+                        <span className={`text-xs ${isPopular ? 'text-amber-100/70' : 'text-emerald-600'}`}>
+                          {t.pricing.billing.perMonth}
+                        </span>
+                      </div>
+                      <p className={`text-[10px] ${isPopular ? 'text-amber-100/60' : 'text-emerald-500'}`}>
+                        {billedLabel}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={`mt-5 w-full rounded-full px-4 py-2.5 text-xs font-semibold transition ${actionTracking} ${
+                        isPopular
+                          ? 'bg-amber-200 text-emerald-900 hover:bg-amber-100'
+                          : 'bg-emerald-900 text-amber-100 hover:bg-emerald-800'
+                      }`}
+                    >
+                      {t.pricing.cta}
+                    </button>
+                    <ul className="mt-5 space-y-2 text-xs">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2">
+                          <span
+                            className={`mt-1 h-1.5 w-1.5 rounded-full ${
+                              isPopular ? 'bg-amber-200' : 'bg-emerald-400'
+                            }`}
+                          />
+                          <span className={isPopular ? 'text-amber-100/80' : 'text-emerald-700'}>
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div className="rounded-[24px] border border-emerald-100/80 bg-white/80 p-6 text-center shadow-[0_20px_50px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+              <p className={`text-xs font-semibold text-emerald-700 ${labelTracking}`}>
+                {t.pricing.includedTitle}
+              </p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {t.pricing.includedItems.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-emerald-100 bg-emerald-50/70 px-3 py-1 text-[10px] text-emerald-700"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 text-[10px] text-emerald-500">{t.pricing.note}</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="relative mx-auto max-w-6xl px-6 pb-24">
           <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-8 shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
             <h2 className="font-display text-3xl text-emerald-950">{t.about.title}</h2>
             <div className="mt-4 space-y-4 text-emerald-700">
