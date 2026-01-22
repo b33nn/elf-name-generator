@@ -452,14 +452,17 @@ export default function Home() {
                   stroke="currentColor"
                   strokeWidth="1.8"
                 >
-                  <path d="M12 2l2.6 6 6.4.6-4.8 4.3 1.4 6.2L12 15.7 6.4 19.1l1.4-6.2L3 8.6l6.4-.6L12 2z" />
+                  <path d="M4 8l4-4h8l4 4-8 12-8-12z" />
+                  <path d="M4 8h16" />
+                  <path d="M9 8l3 12" />
+                  <path d="M15 8l-3 12" />
                 </svg>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-display text-lg tracking-[0.35em]">ELFFORGE</span>
               </div>
             </div>
-            <div className={`hidden items-center gap-8 text-[11px] text-emerald-100/70 md:flex ${labelTracking}`}>
+            <div className={`hidden items-center gap-8 text-[12px] text-emerald-100/70 md:flex ${labelTracking}`}>
               <a href="#generator" className="transition hover:text-amber-200">
                 {t.nav.generator}
               </a>
@@ -479,18 +482,21 @@ export default function Home() {
               >
                 <svg
                   viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                >
-                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                  <path d="M2 12h20" />
-                  <path d="M12 2a15 15 0 010 20" />
-                </svg>
-                {languageLabel}
-              </button>
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              >
+                <path d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                <path d="M3 12h18" />
+                <path d="M5 8h14" />
+                <path d="M5 16h14" />
+                <path d="M12 3a15 15 0 010 18" />
+                <path d="M12 3a15 15 0 000 18" />
+              </svg>
+              {languageLabel}
+            </button>
               <AuthButton locale={locale} />
             </div>
           </nav>
@@ -779,9 +785,10 @@ export default function Home() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-8 text-center shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur lg:p-12">
-                    <div className="mx-auto flex h-32 w-full max-w-sm items-center justify-center rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70">
-                      <span className={`text-xs text-emerald-600 ${labelTracking}`}>
+                  <div className="rounded-[28px] border border-emerald-100/80 bg-white/80 p-8 text-center shadow-[0_24px_60px_-40px_rgba(15,45,34,0.6)] backdrop-blur lg:p-12 lg:min-h-[520px] lg:flex lg:flex-col lg:justify-center">
+                    <div className="mx-auto flex h-44 w-full items-center justify-center rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 text-center relative overflow-hidden sm:h-52 lg:h-60">
+                      <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[22px] border border-emerald-200/70 bg-emerald-100/60 sm:h-36 sm:w-36" />
+                      <span className={`relative z-10 text-xs text-emerald-600 ${labelTracking}`}>
                         {t.results.awaitingSummoning}
                       </span>
                     </div>
