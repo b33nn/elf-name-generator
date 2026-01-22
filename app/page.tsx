@@ -30,7 +30,7 @@ const copy = {
   en: {
     nav: {
       generator: 'Generator',
-      features: 'Features',
+      features: 'Featured',
       pricing: 'Pricing',
     },
     hero: {
@@ -117,7 +117,7 @@ const copy = {
   zh: {
     nav: {
       generator: '生成器',
-      features: '功能',
+      features: '精选',
       pricing: '定价',
     },
     hero: {
