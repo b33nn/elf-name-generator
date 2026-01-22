@@ -26,7 +26,8 @@
       "Bash(node test-hotaru-api.js:*)",
       "Bash(curl:*)",
       "Bash(if exist .env.local type .env.local)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(dir:*)"
     ]
   }
 }
