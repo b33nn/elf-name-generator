@@ -121,6 +121,7 @@ const copy = {
           priceYearly: '7',
           strikeMonthly: '12',
           strikeYearly: '10',
+          highlight: undefined,
           features: [
             '200 names / mo',
             '20 OC profiles',
@@ -137,6 +138,7 @@ const copy = {
           priceYearly: '15',
           strikeMonthly: '24',
           strikeYearly: '19',
+          highlight: undefined,
           features: [
             '800 names / mo',
             '80 OC profiles',
@@ -301,6 +303,7 @@ const copy = {
           priceYearly: '7',
           strikeMonthly: '12',
           strikeYearly: '10',
+          highlight: undefined,
           features: [
             '?? 200 ???',
             '20 ? OC ??',
@@ -317,6 +320,7 @@ const copy = {
           priceYearly: '15',
           strikeMonthly: '24',
           strikeYearly: '19',
+          highlight: undefined,
           features: [
             '?? 800 ???',
             '80 ? OC ??',
