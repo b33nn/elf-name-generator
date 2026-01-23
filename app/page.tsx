@@ -1015,18 +1015,11 @@ export default function Home() {
                                 : 'border-emerald-100 bg-white/90 text-emerald-800 hover:bg-emerald-50'
                             }`}
                           >
-                            <div className={`h-16 w-full rounded-lg overflow-hidden ${isActive ? 'bg-emerald-800' : 'bg-emerald-100'}`}>
-                              {char.imageUrl ? (
-                                <img src={char.imageUrl} alt="" className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="h-full w-full flex items-center justify-center text-sm font-bold opacity-40">
-                                  {char.name[0]}
-                                </div>
-                              )}
-                            </div>
-                            <div className="px-1 overflow-hidden">
-                              <p className="text-[11px] font-bold truncate">{char.name}</p>
-                              <p className={`text-[9px] truncate opacity-70`}>{char.meaning}</p>
+                            <div className="px-1 py-3 overflow-hidden">
+                              <p className="text-sm font-semibold truncate">{char.name}</p>
+                              <p className={`text-[10px] truncate italic ${isActive ? 'text-amber-100/70' : 'text-emerald-600'}`}>
+                                {char.meaning}
+                              </p>
                             </div>
                           </button>
                         );
