@@ -221,6 +221,8 @@ const copy = {
     alerts: {
       generateFailed: 'Failed to generate character',
       billingFailed: 'Checkout failed. Please try again.',
+      checkoutSuccess: 'Payment successful. Your plan is now active.',
+      checkoutCanceled: 'Payment canceled. You can try again anytime.',
       unknown: 'Unknown error',
     },
   },
@@ -415,6 +417,8 @@ const copy = {
     alerts: {
       generateFailed: '生成角色失败',
       billingFailed: '支付发起失败，请稍后重试。',
+      checkoutSuccess: '支付成功，已为你开通。',
+      checkoutCanceled: '你已取消支付，可随时再试。',
       unknown: '未知错误',
     },
   },
@@ -434,6 +438,7 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [locale, setLocale] = useState<Locale>('en');
   const [error, setError] = useState<string>('');
+  const [notice, setNotice] = useState<{ type: 'success' | 'warning'; message: string } | null>(null);
   const [loadingOC, setLoadingOC] = useState<Set<number>>(new Set());
   const [loadingImage, setLoadingImage] = useState<Set<number>>(new Set());
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -450,6 +455,18 @@ export default function Home() {
   useEffect(() => {
     window.localStorage.setItem('elfforge-locale', locale);
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+  }, [locale]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get('success');
+    const canceled = params.get('canceled');
+    if (success === '1') {
+      setNotice({ type: 'success', message: copy[locale].alerts.checkoutSuccess });
+    } else if (canceled === '1') {
+      setNotice({ type: 'warning', message: copy[locale].alerts.checkoutCanceled });
+    }
   }, [locale]);
 
   useEffect(() => {
@@ -654,6 +671,70 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-emerald-950 font-body">
+      {/* Status Alerts */}
+      {notice && (
+        <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2 animate-rise">
+          <div
+            className={`flex items-center gap-3 rounded-2xl border px-6 py-4 ${
+              notice.type === 'success'
+                ? 'border-emerald-200 bg-emerald-50 shadow-[0_20px_50px_-20px_rgba(16,185,129,0.35)]'
+                : 'border-amber-200 bg-amber-50 shadow-[0_20px_50px_-20px_rgba(245,158,11,0.35)]'
+            }`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className={`h-5 w-5 ${
+                notice.type === 'success' ? 'text-emerald-600' : 'text-amber-600'
+              }`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              {notice.type === 'success' ? (
+                <>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M8 12l2.5 2.5L16 9" />
+                </>
+              ) : (
+                <>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v4m0 4h.01" />
+                </>
+              )}
+            </svg>
+            <span
+              className={`text-sm font-medium ${
+                notice.type === 'success' ? 'text-emerald-900' : 'text-amber-900'
+              }`}
+            >
+              {notice.message}
+            </span>
+            <button
+              type="button"
+              onClick={() => setNotice(null)}
+              className={`ml-2 rounded-full p-1 transition ${
+                notice.type === 'success'
+                  ? 'text-emerald-600 hover:bg-emerald-100'
+                  : 'text-amber-600 hover:bg-amber-100'
+              }`}
+              aria-label="Close notice"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Error Alerts */}
       {error && (
         <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2 animate-rise">

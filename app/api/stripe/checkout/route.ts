@@ -65,8 +65,8 @@ export async function POST(req: Request) {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
-      success_url: `${baseUrl}/pricing?success=1`,
-      cancel_url: `${baseUrl}/pricing?canceled=1`,
+      success_url: `${baseUrl}/?success=1#pricing`,
+      cancel_url: `${baseUrl}/?canceled=1#pricing`,
       subscription_data: {
         metadata: {
           userId: dbUser.id,
@@ -99,8 +99,8 @@ export async function POST(req: Request) {
       customer: customerId,
       line_items: [{ price: pack.priceId, quantity: 1 }],
       payment_method_types: paymentMethodTypes,
-      success_url: `${baseUrl}/pricing?success=1&pack=${payload.packId}`,
-      cancel_url: `${baseUrl}/pricing?canceled=1`,
+      success_url: `${baseUrl}/?success=1&pack=${payload.packId}#pricing`,
+      cancel_url: `${baseUrl}/?canceled=1#pricing`,
       payment_intent_data: {
         metadata: {
           userId: dbUser.id,
