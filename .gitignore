@@ -16,3 +16,6 @@ test-text-api.js
 # Database
 *.db
 *.db-journal
+
+# Windows reserved name file
+nul

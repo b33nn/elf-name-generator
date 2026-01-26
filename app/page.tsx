@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { featuredCharacters } from '@/lib/featured-characters';
 import { AuthButton } from '@/components/AuthButton';
 
@@ -103,6 +104,7 @@ const copy = {
         value: 'Best Value',
       },
       cta: 'Choose Plan',
+      processing: 'Processing...',
       includedTitle: 'All plans include',
       includedItems: [
         '5 elf sub-races',
@@ -112,6 +114,15 @@ const copy = {
         'Export & copy tools',
       ],
       note: 'Cancel anytime. No hidden fees.',
+      imagePack: {
+        id: 'portrait-pack',
+        kicker: 'Portrait Add-on',
+        title: 'Portrait Pack',
+        description: 'Top up image credits for AI portraits.',
+        credits: '20 portrait credits',
+        price: '$9',
+        cta: 'Buy Image Credits',
+      },
       plans: [
         {
           id: 'initiate',
@@ -209,6 +220,7 @@ const copy = {
     },
     alerts: {
       generateFailed: 'Failed to generate character',
+      billingFailed: 'Checkout failed. Please try again.',
       unknown: 'Unknown error',
     },
   },
@@ -285,6 +297,7 @@ const copy = {
         value: '?????',
       },
       cta: '????',
+      processing: '处理中...',
       includedTitle: '??????',
       includedItems: [
         '5 ?????',
@@ -294,6 +307,15 @@ const copy = {
         '???????',
       ],
       note: '???????????',
+      imagePack: {
+        id: 'portrait-pack',
+        kicker: '画像加购',
+        title: '画像充值包',
+        description: '用于 AI 画像生成的额外点数。',
+        credits: '20 张画像额度',
+        price: '$9',
+        cta: '购买画像点数',
+      },
       plans: [
         {
           id: 'initiate',
@@ -392,6 +414,7 @@ const copy = {
     },
     alerts: {
       generateFailed: '生成角色失败',
+      billingFailed: '支付发起失败，请稍后重试。',
       unknown: '未知错误',
     },
   },
@@ -414,6 +437,7 @@ export default function Home() {
   const [loadingOC, setLoadingOC] = useState<Set<number>>(new Set());
   const [loadingImage, setLoadingImage] = useState<Set<number>>(new Set());
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -557,18 +581,55 @@ export default function Home() {
         body: JSON.stringify({ name: char.name, race: char.raceId, oc: char.oc }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to generate portrait');
+      }
       const updated = [...characters];
       updated[index] = { ...updated[index], imageUrl: data.imageUrl };
       setCharacters(updated);
     } catch (error) {
       console.error('Failed to generate image:', error);
-      setError('Failed to generate portrait');
+      setError(error instanceof Error ? error.message : 'Failed to generate portrait');
     } finally {
       setLoadingImage((prev) => {
         const next = new Set(prev);
         next.delete(index);
         return next;
       });
+    }
+  };
+
+  const handleCheckout = async (
+    payload:
+      | { type: 'subscription'; planId: string; billingCycle: 'monthly' | 'yearly' }
+      | { type: 'image_pack'; packId: string }
+  ) => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
+
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 401) {
+        setCheckoutLoading(false);
+        signIn();
+        return;
+      }
+
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Checkout failed');
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      setError(t.alerts.billingFailed);
+      setCheckoutLoading(false);
     }
   };
 
@@ -1211,13 +1272,17 @@ export default function Home() {
                     </div>
                     <button
                       type="button"
+                      onClick={() =>
+                        handleCheckout({ type: 'subscription', planId: plan.id, billingCycle })
+                      }
+                      disabled={checkoutLoading}
                       className={`mt-5 w-full rounded-full px-4 py-2.5 text-xs font-semibold transition ${actionTracking} ${
                         isPopular
-                          ? 'bg-amber-200 text-emerald-900 hover:bg-amber-100'
-                          : 'bg-emerald-900 text-amber-100 hover:bg-emerald-800'
-                      }`}
+                          ? 'bg-amber-200 text-emerald-900 hover:bg-amber-100 disabled:opacity-70'
+                          : 'bg-emerald-900 text-amber-100 hover:bg-emerald-800 disabled:opacity-70'
+                      } disabled:cursor-not-allowed`}
                     >
-                      {t.pricing.cta}
+                      {checkoutLoading ? t.pricing.processing : t.pricing.cta}
                     </button>
                     <ul className="mt-5 space-y-2 text-xs">
                       {plan.features.map((feature) => (
@@ -1236,6 +1301,30 @@ export default function Home() {
                   </article>
                 );
               })}
+            </div>
+
+            <div className="rounded-[24px] border border-emerald-100/80 bg-white/80 p-6 shadow-[0_20px_50px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
+              <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-3">
+                  <p className={`text-xs text-emerald-600 ${labelTracking}`}>{t.pricing.imagePack.kicker}</p>
+                  <h3 className="font-display text-2xl text-emerald-950">{t.pricing.imagePack.title}</h3>
+                  <p className="text-sm text-emerald-700">{t.pricing.imagePack.description}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-6">
+                  <div>
+                    <p className="text-3xl font-semibold text-emerald-950">{t.pricing.imagePack.price}</p>
+                    <p className="text-xs text-emerald-600">{t.pricing.imagePack.credits}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCheckout({ type: 'image_pack', packId: t.pricing.imagePack.id })}
+                    disabled={checkoutLoading}
+                    className={`rounded-full border border-emerald-900 bg-emerald-900 px-5 py-2.5 text-xs font-semibold text-amber-100 transition ${actionTracking} hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-70`}
+                  >
+                    {checkoutLoading ? t.pricing.processing : t.pricing.imagePack.cta}
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="rounded-[24px] border border-emerald-100/80 bg-white/80 p-6 text-center shadow-[0_20px_50px_-40px_rgba(15,45,34,0.6)] backdrop-blur">
