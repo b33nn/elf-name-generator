@@ -1,3 +1,4 @@
+import type Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -88,12 +89,16 @@ export async function POST(req: Request) {
     if (!pack?.priceId) {
       return NextResponse.json({ error: 'Invalid pack configuration' }, { status: 400 });
     }
+    const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card'];
+    if (process.env.STRIPE_ENABLE_ALIPAY === 'true') {
+      paymentMethodTypes.push('alipay');
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer: customerId,
       line_items: [{ price: pack.priceId, quantity: 1 }],
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: paymentMethodTypes,
       success_url: `${baseUrl}/pricing?success=1&pack=${payload.packId}`,
       cancel_url: `${baseUrl}/pricing?canceled=1`,
       payment_intent_data: {
