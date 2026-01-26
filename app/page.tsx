@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { featuredCharacters } from '@/lib/featured-characters';
 import { AuthButton } from '@/components/AuthButton';
 
@@ -26,6 +26,15 @@ type Character = {
 
 type Gender = 'feminine' | 'masculine' | 'neutral';
 type Locale = 'en' | 'zh';
+type BillingStatus =
+  | { authenticated: false }
+  | {
+      authenticated: true;
+      plan: string;
+      subscriptionStatus?: string | null;
+      subscriptionCurrentPeriodEnd?: string | null;
+      imageCredits: number;
+    };
 
 const copy = {
   en: {
@@ -439,11 +448,27 @@ export default function Home() {
   const [locale, setLocale] = useState<Locale>('en');
   const [error, setError] = useState<string>('');
   const [notice, setNotice] = useState<{ type: 'success' | 'warning'; message: string } | null>(null);
+  const [billingStatus, setBillingStatus] = useState<BillingStatus | null>(null);
+  const [billingLoading, setBillingLoading] = useState(false);
   const [loadingOC, setLoadingOC] = useState<Set<number>>(new Set());
   const [loadingImage, setLoadingImage] = useState<Set<number>>(new Set());
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
+  const { status: sessionStatus } = useSession();
+
+  const refreshBillingStatus = async () => {
+    setBillingLoading(true);
+    try {
+      const res = await fetch('/api/billing/status', { cache: 'no-store' });
+      const data = (await res.json()) as BillingStatus;
+      setBillingStatus(data);
+    } catch (err) {
+      console.error('Failed to load billing status', err);
+    } finally {
+      setBillingLoading(false);
+    }
+  };
 
   useEffect(() => {
     const savedLocale = window.localStorage.getItem('elfforge-locale');
@@ -458,16 +483,28 @@ export default function Home() {
   }, [locale]);
 
   useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      refreshBillingStatus();
+    } else if (sessionStatus === 'unauthenticated') {
+      setBillingStatus({ authenticated: false });
+    }
+  }, [sessionStatus]);
+
+  useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const success = params.get('success');
     const canceled = params.get('canceled');
     if (success === '1') {
       setNotice({ type: 'success', message: copy[locale].alerts.checkoutSuccess });
+      if (sessionStatus === 'authenticated') {
+        refreshBillingStatus();
+        setTimeout(() => refreshBillingStatus(), 3000);
+      }
     } else if (canceled === '1') {
       setNotice({ type: 'warning', message: copy[locale].alerts.checkoutCanceled });
     }
-  }, [locale]);
+  }, [locale, sessionStatus]);
 
   useEffect(() => {
     fetch('/api/generate/name')
@@ -652,6 +689,78 @@ export default function Home() {
 
   const activeCharacter = characters[activeIndex];
   const t = copy[locale];
+  const statusLabels =
+    locale === 'zh'
+      ? {
+          title: '你的用量',
+          subtitle: '支付后显示当前方案与剩余额度。',
+          signIn: '登录后查看剩余次数',
+          planLabel: '方案',
+          statusLabel: '状态',
+          renewLabel: '续费日期',
+          creditsLabel: '剩余画像次数',
+          free: '免费',
+          active: '已开通',
+          canceled: '已取消',
+          pastDue: '逾期',
+          incomplete: '待完成',
+          incompleteExpired: '已过期',
+          trialing: '试用中',
+          none: '—',
+          loading: '加载中...',
+        }
+      : {
+          title: 'Your Access',
+          subtitle: 'Updated after checkout to show your plan and credits.',
+          signIn: 'Sign in to view your usage',
+          planLabel: 'Plan',
+          statusLabel: 'Status',
+          renewLabel: 'Renews',
+          creditsLabel: 'Image credits',
+          free: 'Free',
+          active: 'Active',
+          canceled: 'Canceled',
+          pastDue: 'Past due',
+          incomplete: 'Pending',
+          incompleteExpired: 'Expired',
+          trialing: 'Trial',
+          none: '—',
+          loading: 'Loading...',
+        };
+  const statusLabel =
+    billingStatus && billingStatus.authenticated
+      ? (() => {
+          switch (billingStatus.subscriptionStatus) {
+            case 'active':
+              return statusLabels.active;
+            case 'canceled':
+              return statusLabels.canceled;
+            case 'past_due':
+              return statusLabels.pastDue;
+            case 'incomplete':
+              return statusLabels.incomplete;
+            case 'incomplete_expired':
+              return statusLabels.incompleteExpired;
+            case 'trialing':
+              return statusLabels.trialing;
+            default:
+              return statusLabels.none;
+          }
+        })()
+      : statusLabels.none;
+  const planName =
+    billingStatus && billingStatus.authenticated
+      ? billingStatus.plan === 'FREE'
+        ? statusLabels.free
+        : t.pricing.plans.find((plan) => plan.id === billingStatus.plan)?.name ?? billingStatus.plan
+      : statusLabels.none;
+  const renewLabel =
+    billingStatus && billingStatus.authenticated && billingStatus.subscriptionCurrentPeriodEnd
+      ? new Date(billingStatus.subscriptionCurrentPeriodEnd).toLocaleDateString(
+          locale === 'zh' ? 'zh-CN' : 'en-US',
+          { year: 'numeric', month: 'short', day: 'numeric' },
+        )
+      : statusLabels.none;
   const genderLabel = t.gender[gender];
   const labelTracking = locale === 'en' ? 'uppercase tracking-[0.08em]' : 'tracking-normal';
   const actionTracking = locale === 'en' ? 'uppercase tracking-[0.1em]' : 'tracking-normal';
@@ -1292,6 +1401,52 @@ export default function Home() {
               <span className="rounded-full border border-emerald-100 bg-emerald-50/80 px-3 py-1 text-[10px] text-emerald-700">
                 {t.pricing.billing.note}
               </span>
+            </div>
+
+            <div className="rounded-[24px] border border-emerald-100/80 bg-white/85 p-5 shadow-sm">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-1">
+                  <p className={`text-xs text-emerald-600 ${labelTracking}`}>{statusLabels.title}</p>
+                  <p className="text-sm text-emerald-700">{statusLabels.subtitle}</p>
+                </div>
+                {billingLoading ? (
+                  <div className="text-xs text-emerald-600">{statusLabels.loading}</div>
+                ) : billingStatus?.authenticated ? (
+                  <div className="text-xs text-emerald-600">
+                    {statusLabels.statusLabel}: {statusLabel}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => signIn()}
+                    className={`rounded-full border border-emerald-200 px-4 py-2 text-[11px] font-semibold text-emerald-800 transition hover:bg-emerald-50 ${labelTracking}`}
+                  >
+                    {statusLabels.signIn}
+                  </button>
+                )}
+              </div>
+              {billingStatus?.authenticated && (
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-xl border border-emerald-100/80 bg-emerald-50/60 px-4 py-3">
+                    <p className="text-[10px] text-emerald-500">{statusLabels.planLabel}</p>
+                    <p className="text-sm font-semibold text-emerald-900">{planName}</p>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100/80 bg-emerald-50/60 px-4 py-3">
+                    <p className="text-[10px] text-emerald-500">{statusLabels.statusLabel}</p>
+                    <p className="text-sm font-semibold text-emerald-900">{statusLabel}</p>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100/80 bg-emerald-50/60 px-4 py-3">
+                    <p className="text-[10px] text-emerald-500">{statusLabels.renewLabel}</p>
+                    <p className="text-sm font-semibold text-emerald-900">{renewLabel}</p>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100/80 bg-emerald-50/60 px-4 py-3">
+                    <p className="text-[10px] text-emerald-500">{statusLabels.creditsLabel}</p>
+                    <p className="text-sm font-semibold text-emerald-900">
+                      {billingStatus.imageCredits}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid gap-6 lg:grid-cols-4 animate-rise-delay-2">
